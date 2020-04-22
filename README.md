@@ -7,5 +7,5 @@ $ ./gradlew build
 ```
 and then
 ```shell script
-docker-compose up
+$ docker-compose up
 ```
