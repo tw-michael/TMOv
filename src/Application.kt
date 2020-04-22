@@ -1,20 +1,27 @@
 package de.michael
 
-import de.michael.TranslationJob
-import com.ryanharter.ktor.moshi.moshi
-import com.squareup.moshi.JsonClass
-import io.ktor.application.*
-import io.ktor.response.*
-import io.ktor.request.*
-import io.ktor.routing.*
-import io.ktor.http.*
-import io.ktor.html.*
-import kotlinx.html.*
-import io.ktor.features.*
+import de.michael.TranslationJob.TranslationJob
+import io.ktor.application.Application
+import io.ktor.application.call
+import io.ktor.application.install
+import io.ktor.features.CallLogging
+import io.ktor.features.ContentNegotiation
+import io.ktor.features.DefaultHeaders
+import io.ktor.features.StatusPages
+import io.ktor.gson.gson
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.request.path
+import io.ktor.request.receive
+import io.ktor.response.respond
+import io.ktor.response.respondText
+import io.ktor.routing.get
+import io.ktor.routing.post
+import io.ktor.routing.routing
 import mu.KotlinLogging
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.slf4j.event.*
+import org.slf4j.event.Level
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -49,7 +56,9 @@ fun Application.module(testing: Boolean = false) {
     }
 
     install(ContentNegotiation) {
-        moshi()
+        gson {
+
+        }
     }
 
     DbSettings.db
@@ -74,6 +83,5 @@ fun Application.module(testing: Boolean = false) {
 class AuthenticationException : RuntimeException()
 class AuthorizationException : RuntimeException()
 
-@JsonClass(generateAdapter = true)
 data class JobSavedResponse(val title: String, val id: Int)
 

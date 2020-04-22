@@ -1,9 +1,6 @@
 package de.michael
 
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.kotest.assertions.json.shouldContainJsonKey
-import io.kotest.assertions.json.shouldMatchJson
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.ktor.http.HttpMethod
@@ -25,18 +22,19 @@ class ApplicationTest : FunSpec({
     }
     context("create a job") {
         test("job should be saved and displayed after posting it to /job") {
-            val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-            val adapter = moshi.adapter(TranslationJob::class.java)
-
             withTestApplication({ module(testing = true) }) {
 
                 // given
-                val job = TranslationJob(title = "ExampleJob1")
+                val jobInfoJson = """
+                    {
+                        "title": "${aJobTitle()}"
+                    }
+                """.trimIndent()
 
                 // when
                 handleRequest(HttpMethod.Post, "/job") {
                     this.addHeader("Content-Type", "application/json")
-                    this.setBody(adapter.toJson(job))
+                    this.setBody(jobInfoJson)
                 }.apply {
 
                     // then
