@@ -12,6 +12,7 @@ import io.ktor.html.*
 import kotlinx.html.*
 import io.ktor.features.*
 import mu.KotlinLogging
+import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.event.*
 
@@ -52,6 +53,9 @@ fun Application.module(testing: Boolean = false) {
     }
 
     DbSettings.db
+    transaction {
+        SchemaUtils.create(TranslationJobs)
+    }
 
     routing {
         post("/job") {

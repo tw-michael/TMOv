@@ -9,6 +9,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.withTestApplication
 import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -16,6 +17,9 @@ class DatabaseTest : FunSpec({
 
     beforeSpec {
         DbSettings.db
+        transaction {
+            SchemaUtils.create(TranslationJobs)
+        }
     }
 
     context("jobs") {
