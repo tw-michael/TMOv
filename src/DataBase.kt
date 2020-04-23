@@ -29,7 +29,7 @@ fun findJobById(jobId: Int): TranslationJob {
         .toTranslationJob()
 }
 
-private fun ResultRow.toTranslationJob(): TranslationJob =
+fun ResultRow.toTranslationJob(): TranslationJob =
     TranslationJob(this[id], this[title])
 
 object TranslationJobs : Table() {

@@ -20,6 +20,7 @@ import io.ktor.routing.post
 import io.ktor.routing.routing
 import mu.KotlinLogging
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.event.Level
 
@@ -73,6 +74,15 @@ fun Application.module(testing: Boolean = false) {
                 saveTranslationJob(job)
             }
             call.respond(JobSavedResponse(job.title, jobId))
+        }
+        get("/job") {
+            transaction {
+                TranslationJobs.selectAll().toList()
+            }.map {
+                it.toTranslationJob()
+            }.let {
+                call.respond(it)
+            }
         }
         get("/") {
             call.respondText("HELLO WORLD!", contentType = ContentType.Text.Plain)
